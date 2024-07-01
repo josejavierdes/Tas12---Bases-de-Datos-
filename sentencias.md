@@ -4,17 +4,14 @@
 ## 1. El numero total de facturas realizadas por cada cliente: nombre_cliente | direccion | nro_facturas.
   - Sentencia:
   ```
-SELECT
-    c.full_name,
-    c.address
+SELECT 
+    c.full_name AS nombre_cliente, 
+    c.address AS direccion, 
+    (SELECT COUNT(*) 
+     FROM invoice i 
+     WHERE i.client_id = c.id) AS nro_facturas
 FROM 
-    client c
-WHERE
-    c.id IN (
-        SELECT i.client_id
-        FROM invoice i
-        WHERE i.total > 100::MONEY
-    );
+    client c;
 
 
   ```
@@ -25,13 +22,13 @@ WHERE
 
 ## 2.Listar nombre y correo de los clientes junto a su compra mas cara realizada: nombres |  correo   | total_mas_alto.
   ```
-SELECT 
-    c.full_name AS nombre_cliente, 
-    c.address AS direccion, 
-    (SELECT COUNT(*) 
-     FROM invoice i 
-     WHERE i.client_id = c.id) AS nro_facturas
-FROM 
+SELECT
+    c.full_name AS nombres,
+    c.email AS correo,
+    (SELECT MAX(i.total)
+     FROM invoice i
+     WHERE i.client_id = c.id) AS total_mas_alto
+FROM
     client c;
   ```
   - Capturas:
